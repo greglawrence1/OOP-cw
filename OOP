@@ -1,0 +1,109 @@
+import java.awt.Color;
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import uk.ac.leedsbeckett.oop.LBUGraphics;
+import java.util.Scanner;
+
+public class GraphicsSystem extends LBUGraphics
+{
+
+        public GraphicsSystem()
+        {
+            JFrame MainFrame = new JFrame();           
+            MainFrame.setLayout(new FlowLayout());      
+            MainFrame.add(this);                                        
+            MainFrame.pack();                                           
+            MainFrame.setVisible(true);                         
+        }
+        
+        private final String[] VALID_COMMANDS = 
+ {"reset", "turnLeft", "turnRight", "getPenColour", "penUp", 
+		 "penDown", "forward", "clear", "backward"};
+        
+        
+ 		public void forward()
+ 		{
+ 			forward(50);
+ 		}
+ 		public void backward()
+ 		{
+ 			backward();
+ 		}
+ 			      
+ 		public void processCommand(String command)     
+        {
+ 			
+                String[] commands = command.split(" ");
+                
+                switch (commands[0]) 
+                {
+                case "about":
+                	about();
+                	break;             	
+                case "forward":
+                forward();
+                	break;
+                case "penUP":
+                penUp();
+                	break;
+                case "penDown":
+                penDown();
+                	break;
+                case "backward":
+                backward();
+                	break;
+                case "clear":
+                clear();
+                	break;
+                case "reset":
+                reset();
+                	break;
+                }               
+                {
+         			Scanner scanner = new Scanner (System.in);
+         			int left = scanner.nextInt();
+         			if (left >= 0)
+         			turnLeft(left);
+         			scanner.close();
+         			break;
+             	}
+                {
+		 			Scanner input = new Scanner (System.in);
+		 			int right = input.nextInt();
+		 			turnLeft(right);
+		 			input.close();
+		 			break;
+                }
+                {
+                	Scanner input = new Scanner (System.in);
+                	int forwards = input.nextInt();
+                	if (forwards >= 0) 
+                	forward(forwards);
+                	break;
+                }
+                { 	
+         			String[] colour = command.split(" ");
+         			switch (commands[0])
+         		{
+         			case "orange":
+         			getPenColor("orange");
+         				break;
+         			case "red":
+         			getPenColor("red");
+         				break;
+         			case "cyan":
+         			getPenColor("cyan");
+         				break;
+         			case "green":
+         			getPenColor("green");
+         				break;
+         		}
+         			                
+        }
+
+}
+		public void getPenColor(String string) 
+		{
+			getPenColour();
+		}
+}
