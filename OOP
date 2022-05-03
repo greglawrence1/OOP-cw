@@ -2,7 +2,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import uk.ac.leedsbeckett.oop.LBUGraphics;
-import java.util.Scanner;
+
+
 
 public class GraphicsSystem extends LBUGraphics
 {
@@ -18,92 +19,80 @@ public class GraphicsSystem extends LBUGraphics
         
         private final String[] VALID_COMMANDS = 
  {"reset", "turnLeft", "turnRight", "getPenColour", "penUp", 
-		 "penDown", "forward", "clear", "backward"};
-        
-        
- 		public void forward()
- 		{
- 			forward(50);
- 		}
- 		public void backward()
- 		{
- 			backward();
- 		}
- 			      
+		 "penDown", "forward", "clear", "backward", "green", "orange", "red", "white"};
+    
+
+ 		@Override
  		public void processCommand(String command)     
         {
  			
                 String[] commands = command.split(" ");
                 
+                {
                 switch (commands[0]) 
                 {
                 case "about":
                 	about();
                 	break;             	
-                case "forward":
-                forward();
-                	break;
-                case "penUP":
-                penUp();
+                case "penUp":
+                	Boolean penUp1 = true;
+                	Boolean penDown1 = false;
+                	if(penUp1)
+                	{
+                		penUp();
+                	}
+                	if(penDown1)
+                	{
+                		penDown();
+                	}
                 	break;
                 case "penDown":
-                penDown();
-                	break;
-                case "backward":
-                backward();
+                	Boolean penDown2 = true;
+                	Boolean penUp2 = false;
+                	if(penDown2)
+                	{
+                		penDown();
+                	}
+                	if(penUp2)
+                	{
+                		penUp();
+                	}
                 	break;
                 case "clear":
-                clear();
+                	clear();
                 	break;
                 case "reset":
-                reset();
+                	reset();
+                	turnLeft(90);
                 	break;
-                }               
-                {
-         			Scanner scanner = new Scanner (System.in);
-         			int left = scanner.nextInt();
-         			if (left >= 0)
-         			turnLeft(left);
-         			scanner.close();
+                case "turnLeft":
+                	String left = commands[1];
+                	turnLeft(left);
          			break;
-             	}
-                {
-		 			Scanner input = new Scanner (System.in);
-		 			int right = input.nextInt();
-		 			turnLeft(right);
-		 			input.close();
-		 			break;
-                }
-                {
-                	Scanner input = new Scanner (System.in);
-                	int forwards = input.nextInt();
-                	if (forwards >= 0) 
+                case "turnRight":
+                	String right = commands[1];
+                	turnRight(right);
+                	break;
+                case "forward":
+                	String forwards = commands[1];
                 	forward(forwards);
                 	break;
+                case "backward":
+                	String backwards = commands[1];
+                	int back = Integer.parseInt(backwards);
+                	back = -back;
+                	forward(back);
+                	break;
+                case "green":
+                	String green = commands[0];
+                	Color.getColor(green);
+                	break;
+                case "white":
+                	String white = commands[0];
+                	Color.getColor(white);
+                	break;
                 }
-                { 	
-         			String[] colour = command.split(" ");
-         			switch (commands[0])
-         		{
-         			case "orange":
-         			getPenColor("orange");
-         				break;
-         			case "red":
-         			getPenColor("red");
-         				break;
-         			case "cyan":
-         			getPenColor("cyan");
-         				break;
-         			case "green":
-         			getPenColor("green");
-         				break;
-         		}
-         			                
         }
 
 }
-		public void getPenColor(String string) 
-		{
-			getPenColour();
-		}
 }
