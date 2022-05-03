@@ -96,3 +96,54 @@ public class GraphicsSystem extends LBUGraphics
 
 }
 }
+
+
+import java.util.Arrays;
+
+public class Validator {
+    
+	private final String[] VALID_COMMANDS = 
+    	{"reset", "turnLeft", "turnRight", "getPenColour", "penUp", 
+    		"penDown", "forward", "clear", "backward",
+    		"green", "orange", "red", "white"};
+
+	public Validator()
+	{
+		
+	}
+	
+	boolean CommandValid(String command)
+	{
+		boolean valid = Arrays.stream(VALID_COMMANDS).anyMatch(command::equals);
+		
+		return valid;
+	}
+	
+	public void ReasonableNumberCheck(String command)
+	{
+		int commands = Integer.parseInt(command); 
+		while (commands > 1000 || commands < 0)
+		{
+			System.out.println("Please Enter a number below 1000 and Greater than zero ");
+			System.exit(commands);
+		}
+		if (commands < 1000 && commands > 0)
+		{
+			return;	
+		}
+	}
+	
+	boolean NumberCheck(String number)
+	{
+		try
+		{
+			Integer.parseInt(number);
+			return true;
+		}
+		catch (Exception E)
+		{
+			System.out.println("This is not a Valid Number");
+			return false;
+		}
+	}
+}
