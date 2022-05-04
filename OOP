@@ -96,3 +96,64 @@ public class GraphicsSystem extends LBUGraphics
 
 }
 }
+
+
+public class Driver {
+
+		 public static void main(String[] args)
+	        {
+	                new GraphicsSystem(); 
+	        }
+		
+	}
+import java.util.Arrays;
+
+public class Validator {
+    
+	private final String[] VALID_COMMANDS = 
+    	{"reset", "turnLeft", "turnRight", "penUp", 
+    		"penDown", "forward", "clear", "backward",
+    		"green", "orange", "red", "white", "save", "load", "about"};
+
+	public Validator()
+	{
+		
+	}
+	
+	boolean CommandValid(String command)
+	{
+		boolean valid = Arrays.stream(VALID_COMMANDS).anyMatch(command::equals);
+		
+		return valid;
+	}
+	
+
+	public void NumberCheck(String number)
+	{
+		try
+		{
+			Integer.parseInt(number);
+		}
+		catch (NumberFormatException e)
+		{
+			System.out.println("This is not a Valid Number");
+		}
+	}
+}
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+public class saveImage 
+{
+	public void save(BufferedImage buffImg) throws IOException, FileNotFoundException
+	{
+		File file = new File("TurtleImg.png");
+		ImageIO.write(buffImg, "png", file);
+	}
+}
+
