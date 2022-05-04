@@ -1,5 +1,10 @@
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.*;
 import javax.swing.JFrame;
 import uk.ac.leedsbeckett.oop.LBUGraphics;
 
@@ -7,26 +12,28 @@ import uk.ac.leedsbeckett.oop.LBUGraphics;
 
 public class GraphicsSystem extends LBUGraphics
 {
-
+	Validator Validator1 = new Validator();
+	
         public GraphicsSystem()
         {
             JFrame MainFrame = new JFrame();           
             MainFrame.setLayout(new FlowLayout());      
             MainFrame.add(this);                                        
             MainFrame.pack();                                           
-            MainFrame.setVisible(true);                         
+            MainFrame.setVisible(true); 
+            turnLeft(90);
         }
         
-        private final String[] VALID_COMMANDS = 
- {"reset", "turnLeft", "turnRight", "getPenColour", "penUp", 
-		 "penDown", "forward", "clear", "backward", "green", "orange", "red", "white"};
-    
-
  		@Override
  		public void processCommand(String command)     
         {
- 			
+ 						
                 String[] commands = command.split(" ");
+                if (Validator1.CommandValid(commands[0]) == false)
+                {
+                	System.out.println("Incorrect Command");
+                	return;
+                }
                 
                 {
                 switch (commands[0]) 
@@ -67,33 +74,107 @@ public class GraphicsSystem extends LBUGraphics
                 	break;
                 case "turnLeft":
                 	String left = commands[1];
-                	turnLeft(left);
-         			break;
-                case "turnRight":
+                	try {
+	                	int lefty = Integer.parseInt(left);
+	                	if (lefty > 0 && lefty < 1000)
+	                	{
+	                	turnLeft(lefty);
+	                	}
+	                	else if (lefty <= 0 || lefty > 1000 )
+	                	{
+	                		System.out.println("Out of the Range 1 - 999");
+	                	}
+                	}
+                	catch (NumberFormatException e) {
+                		System.out.println("This is Not a Number");
+                	}
+                	break;
+				case "turnRight":
                 	String right = commands[1];
-                	turnRight(right);
+                	try {
+	                	int righty = Integer.parseInt(right);
+	                	if (righty > 0 && righty < 1000)
+	                	{
+	                	turnRight(righty);
+	                	}
+	                	else if (righty <= 0 || righty > 1000 )
+	                	{
+	                		System.out.println("Out of the Range 1 - 999");
+	                	}
+                	}
+	                catch (NumberFormatException e){
+	                	System.out.println("This is Not A Number");
+	                }	                	
                 	break;
                 case "forward":
                 	String forwards = commands[1];
-                	forward(forwards);
+	                try {
+                		int onward = Integer.parseInt(forwards);
+	                	if (onward > 0 && onward < 1000)
+	                	{
+	                	forward(onward);
+	                	}
+	                	else if (onward <= 0 || onward > 1000 )
+	                	{
+	                		System.out.println("Out of the Range 1 - 999");
+	                	}
+	                }
+	                catch (NumberFormatException e) {
+	                	System.out.println("This is Not a Number");
+	                }
                 	break;
                 case "backward":
                 	String backwards = commands[1];
-                	int back = Integer.parseInt(backwards);
-                	back = -back;
-                	forward(back);
+	                try {	
+                		int back = Integer.parseInt(backwards);
+	                	back = -back;
+	                	if (-back > 0 && -back < 1000)
+	                	{
+	                	forward(back);
+	                	}
+	                	else if (-back <= 0 || -back > 1000 )
+	                	{
+	                		System.out.println("Out of the Range 1 - 999");
+	                	}
+	                }
+	                catch (NumberFormatException e) {
+	                	System.out.println("This is Not a Number");
+	                }
                 	break;
                 case "green":
-                	String green = commands[0];
-                	Color.getColor(green);
+                	setPenColour(Color.green);
+                	break;
+                case "red":
+                	setPenColour(Color.red);
                 	break;
                 case "white":
-                	String white = commands[0];
-                	Color.getColor(white);
+                	setPenColour(Color.white);
                 	break;
-                }
+                case "orange":
+                	setPenColour(Color.orange);
+                	break;
+                case "save":
+            		try
+            		{
+            		    BufferedImage br = getBufferedImage();
+            		    File file = new File("TurtleImg.png");
+            		    ImageIO.write(br, "png", file);
+            		} catch (IOException e) {
+            		break;
+            		}
+                case "load":  
+                	BufferedImage img = null;
+                	try {
+                	    BufferedImage imgage = ImageIO.read(new File("TurtleImg.png"));
+                	    setBufferedImage(imgage);
+                	} catch (IOException e) {
+                	{
+                	break;
+                	}
         }
 
+}
+}
 }
 }
 
@@ -126,34 +207,6 @@ public class Validator {
 		
 		return valid;
 	}
-	
 
-	public void NumberCheck(String number)
-	{
-		try
-		{
-			Integer.parseInt(number);
-		}
-		catch (NumberFormatException e)
-		{
-			System.out.println("This is not a Valid Number");
-		}
-	}
-}
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-public class saveImage 
-{
-	public void save(BufferedImage buffImg) throws IOException, FileNotFoundException
-	{
-		File file = new File("TurtleImg.png");
-		ImageIO.write(buffImg, "png", file);
-	}
 }
 
