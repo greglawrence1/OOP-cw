@@ -1,7 +1,13 @@
 import java.awt.Color;
+import java.awt.Polygon;
+import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.imageio.*;
@@ -13,6 +19,8 @@ import uk.ac.leedsbeckett.oop.LBUGraphics;
 public class GraphicsSystem extends LBUGraphics
 {
 	Validator Validator1 = new Validator();
+	DrawCircle Shapes1 = new DrawCircle();
+	String[] history;
 	
         public GraphicsSystem()
         {
@@ -23,23 +31,46 @@ public class GraphicsSystem extends LBUGraphics
             MainFrame.setVisible(true); 
             turnLeft(90);
         }
+               
+        @Override
+        public void circle(int radius)
+        {
+        	Graphics2D context = getGraphics2DContext();
+        	context.drawOval(500, 200, radius, radius);
+        	
+        }
         
+        public void triangle(int x1, int x2, int x3)
+        {
+        	Graphics2D context = getGraphics2DContext();
+        	Polygon tri = new Polygon(new int[] {x1,x2,x3}, new int[] {x2,x3,x1}, 3);
+        	context.draw(tri);
+        }
+        
+        public void colour(float r, float g, float b)
+        {
+        	float x1 = r;
+        	float x2 = g;
+        	float x3 = b;
+        	setPenColour(new Color(x1, x2, x3));
+        }
  		@Override
  		public void processCommand(String command)     
         {
- 						
+ 			
                 String[] commands = command.split(" ");
-                if (Validator1.CommandValid(commands[0]) == false)
+                if (Validator1.isAcceptedCommand(commands[0]) == false)
                 {
                 	System.out.println("Incorrect Command");
                 	return;
                 }
-                
+                clearInterface();
                 {
                 switch (commands[0]) 
                 {
                 case "about":
                 	about();
+                	Shapes1.about();
                 	break;             	
                 case "penUp":
                 	Boolean penUp1 = true;
@@ -52,6 +83,7 @@ public class GraphicsSystem extends LBUGraphics
                 	{
                 		penDown();
                 	}
+                	System.out.println("PenUp");
                 	break;
                 case "penDown":
                 	Boolean penDown2 = true;
@@ -64,21 +96,30 @@ public class GraphicsSystem extends LBUGraphics
                 	{
                 		penUp();
                 	}
+                	System.out.println("PenDown");
                 	break;
                 case "clear":
                 	clear();
+                	System.out.println("Image Cleared");
                 	break;
                 case "reset":
                 	reset();
                 	turnLeft(90);
+                	System.out.println("Turtle Reset");
                 	break;
                 case "turnLeft":
+                	if (commands.length < 2)
+                	{
+                		System.out.println("Please Enter A Number");
+                		break;
+                	}
                 	String left = commands[1];
                 	try {
 	                	int lefty = Integer.parseInt(left);
 	                	if (lefty > 0 && lefty < 1000)
 	                	{
 	                	turnLeft(lefty);
+	                	System.out.println("You've Turned Left");
 	                	}
 	                	else if (lefty <= 0 || lefty > 1000 )
 	                	{
@@ -90,12 +131,18 @@ public class GraphicsSystem extends LBUGraphics
                 	}
                 	break;
 				case "turnRight":
+                	if (commands.length < 2)
+                	{
+                		System.out.println("Please Enter A Number");
+                		break;
+                	}
                 	String right = commands[1];
                 	try {
 	                	int righty = Integer.parseInt(right);
 	                	if (righty > 0 && righty < 1000)
 	                	{
 	                	turnRight(righty);
+	                	System.out.println("You've Turned Right");
 	                	}
 	                	else if (righty <= 0 || righty > 1000 )
 	                	{
@@ -107,34 +154,46 @@ public class GraphicsSystem extends LBUGraphics
 	                }	                	
                 	break;
                 case "forward":
-                	String forwards = commands[1];
-	                try {
+                	if (commands.length < 2)
+                	{
+                		System.out.println("Please Enter A Number");
+                		break;
+                	}
+            		try {
+            			String forwards = commands[1];
                 		int onward = Integer.parseInt(forwards);
-	                	if (onward > 0 && onward < 1000)
+	                	if (onward > 0 && onward < 150)
 	                	{
 	                	forward(onward);
+	                	System.out.println("You've moved Forwards");
 	                	}
-	                	else if (onward <= 0 || onward > 1000 )
+	                	else if (onward <= 0 || onward > 151 )
 	                	{
-	                		System.out.println("Out of the Range 1 - 999");
+	                		System.out.println("Out of the Range 1 - 150");
 	                	}
 	                }
 	                catch (NumberFormatException e) {
-	                	System.out.println("This is Not a Number");
+	                	System.out.println("This is Not a Number"); 
 	                }
                 	break;
                 case "backward":
+                	if (commands.length < 2)
+                	{
+                		System.out.println("Please Enter A Number");
+                		break;
+                	}
                 	String backwards = commands[1];
 	                try {	
                 		int back = Integer.parseInt(backwards);
 	                	back = -back;
-	                	if (-back > 0 && -back < 1000)
+	                	if (-back > 0 && -back < 151)
 	                	{
 	                	forward(back);
+	                	System.out.println("You've moved Backwards");
 	                	}
-	                	else if (-back <= 0 || -back > 1000 )
+	                	else if (-back <= 0 || -back > 90 )
 	                	{
-	                		System.out.println("Out of the Range 1 - 999");
+	                		System.out.println("Out of the Range 1 - 150");
 	                	}
 	                }
 	                catch (NumberFormatException e) {
@@ -143,39 +202,89 @@ public class GraphicsSystem extends LBUGraphics
                 	break;
                 case "green":
                 	setPenColour(Color.green);
+                	System.out.println("Pen Green");
                 	break;
                 case "red":
                 	setPenColour(Color.red);
+                	System.out.println("Pen Red");
                 	break;
                 case "white":
                 	setPenColour(Color.white);
+                	System.out.println("Pen White");
                 	break;
                 case "orange":
                 	setPenColour(Color.orange);
+                	System.out.println("Pen Orange");
                 	break;
-                case "save":
-            		try
+                case "saveImage":
+                	displayMessage("Image Saved");
+                	try
             		{
             		    BufferedImage br = getBufferedImage();
             		    File file = new File("TurtleImg.png");
             		    ImageIO.write(br, "png", file);
+            		    System.out.println("Image Saved");
             		} catch (IOException e) {
-            		break;
             		}
-                case "load":  
+                	break;
+                case "loadImage":
                 	BufferedImage img = null;
                 	try {
                 	    BufferedImage imgage = ImageIO.read(new File("TurtleImg.png"));
                 	    setBufferedImage(imgage);
+                	    displayMessage("Image Loaded");
+                	    System.out.println("Image Loaded");
                 	} catch (IOException e) {
-                	{
-                	break;
                 	}
+                	break;              		 	
+                case "circle":
+                	String circ = commands[1];
+                	int radius = Integer.parseInt(circ);
+                	circle(radius);
+                	System.out.println("You've made a circle");
+            		break;
+                case "equalTriangle":
+                	penDown();
+                	String trian = commands[1];
+                	turnLeft(90);
+                	forward(trian);
+                	turnLeft(120);
+                	forward(trian);
+                	turnLeft(120);
+                	forward(trian);
+                	System.out.println("You've created an equalitarel triangle");
+                	break;
+                case "triangle":
+                	if (commands.length < 4)
+                	{
+                		System.out.println("Please Enter Correct Amount Number");
+                		break;
+                	}
+                	penDown();
+                	String y1 = commands[1];
+                	String y2 = commands[2];
+                	String y3 = commands[3];
+                	int x1 = Integer.parseInt(y1);
+                	int x2 = Integer.parseInt(y2);
+                	int x3 = Integer.parseInt(y3);
+                	triangle(x1, x2, x3);
+                	System.out.println("You've created a triangle");
+                	break;
+                case "RGB":
+                	String r = commands[1];
+                	String g = commands[2];
+                	String b = commands[3];
+                	float r1 = Float.parseFloat(r);
+                	float g1 = Float.parseFloat(g);
+                	float b1 = Float.parseFloat(b);
+                	colour(r1, g1, b1);
+                	System.out.println("You've made a Red, Green, Blue Colour of your choice");
+                	break;
+                	
+                }
+                }
         }
 
-}
-}
-}
 }
 
 
